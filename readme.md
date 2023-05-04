@@ -14,17 +14,20 @@ damages for loss of business profits, business interruption, loss of business in
 or other pecuniary loss) arising out of the use of or inability to use the sample script or
 documentation, even if Microsoft has been advised of the possibility of such damages.
 
-.SYNOPSIS
-        Download and install patched Nerd Fonts for use with terminal add-ins such as Powerline 
-        or Oh My Posh/Oh My ZSH
+SYNOPSIS:
 
-.DESCRIPTION
-        This script has four phases:
-            1. Downloads compressed patched Nerd Fonts from Github to a temp folder
-            2. Decompresses the zip files containing the fonts
-            3. Copies the fonts to C:\Windows\Fonts and registeres them for the system
-            4. Cleanup/housekeeping
-.NOTES
+Download and install patched Nerd Fonts for use with terminal add-ins such as Powerline 
+  or Oh My Posh/Oh My ZSH
+
+DESCRIPTION:
+
+This script has four phases:
+           1. Downloads compressed patched Nerd Fonts from Github to a temp folder
+           2. Decompresses the zip files containing the fonts
+           3. Copies the fonts to C:\Windows\Fonts and registeres them for the system
+           4. Cleanup/housekeeping
+
+NOTES:
         Version 1.0
         May 4, 2022
 
