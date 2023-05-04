@@ -1,7 +1,8 @@
 Powershell Script to download and install Nerd Fonts
 
 Fonts are availabe here: https://www.nerdfonts.com/font-downloads
-Assembled by Eugene Valley @ Microsoft Corporation© 2023
+
+Assembled by Eugene Valley @ Microsoft Corporation ©2023
 
 This sample script is not supported under any Microsoft standard support program or service.
 This sample script is provided AS IS without warranty of any kind.
