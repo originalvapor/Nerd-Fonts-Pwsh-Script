@@ -27,8 +27,8 @@
             4. Cleanup/housekeeping
 
     .NOTES
-        Version 1.0
-        May 4, 2022
+        Version 2.0
+        May 25, 2022
 #>
 
 # Requires Powershell v3.0
@@ -74,7 +74,7 @@ if(!([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]:
 
  
 # Disable progress bars for iwr downloads
-    $ProgressPreference = 'SilentlyContinue' 
+#    $ProgressPreference = 'SilentlyContinue' 
 
 # Download Compresed Fonts
     write-host "Downloading Compressed Fonts to a temp folder"
@@ -296,7 +296,7 @@ if(!([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]:
     write-host "Successfully Downloaded Compressed Font: Victor Mono"
     
     # Enable Progress Bars
-    $ProgressPreference = 'Continue' 
+    #    $ProgressPreference = 'Continue' 
    
     # Decompress fonts
     write-host "Decompressing Fonts"
