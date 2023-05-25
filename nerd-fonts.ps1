@@ -33,6 +33,26 @@
 
 # Requires Powershell v3.0
 
+# Elevate creds
+if(!([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] 'Administrator')) {
+    Start-Process -FilePath pwsh.exe -Verb Runas -ArgumentList "-File `"$($MyInvocation.MyCommand.Path)`"  `"$($MyInvocation.MyCommand.UnboundArguments)`""
+    Exit
+   }
+   
+
+# Remove temp folder from previous install attempts
+   $ExFolderName = "$($env:USERPROFILE)\fontstemp"
+   if (Test-Path $ExFolderName) {
+    
+       Write-Host "An old temp folder exists from a previous attemp and needs to be removed."
+       Remove-Item $ExFolderName -Recurse -Force
+       Write-Host "Successfully removed temp folders and content from a previous installation attempt."
+   }
+   else
+   {
+       Write-Host "Temporary font extraction folder doesn't exist, creating."
+   }
+
 # Check for and create temp folder in user profile
     write-host "Preparing Installation"
     Set-Location $env:USERPROFILE
@@ -52,70 +72,238 @@
     New-Item -Path $env:USERPROFILE\fontstemp\ -ItemType Directory -Force
     Set-Location -Path $env:USERPROFILE\fontstemp\
 
-# Download Compresed Fonts
-    write-host "Downloading Compressed Fonts"
-    iwr -uri https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.0/3270.zip -Outfile "$($env:USERPROFILE)\fontstemp\dl3270.zip"
-    iwr -uri https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.0/Agave.zip -Outfile "$($env:USERPROFILE)\fontstemp\Agave.zip"
-    iwr -uri https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.0/AnonymousPro.zip -Outfile "$($env:USERPROFILE)\fontstemp\AnonymousPro.zip"
-    iwr -uri https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.0/Arimo.zip -Outfile "$($env:USERPROFILE)\fontstemp\Arimo.zip"
-    iwr -uri https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.0/AurulentSansMono.zip -Outfile "$($env:USERPROFILE)\fontstemp\AurulentSansMono.zip"
-    iwr -uri https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.0/BigBlueTerminal.zip -Outfile "$($env:USERPROFILE)\fontstemp\BigBlueTerminal.zip"
-    iwr -uri https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.0/BitstreamVeraSansMono.zip -Outfile "$($env:USERPROFILE)\fontstemp\BitstreamVeraSansMono.zip"
-    iwr -uri https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.0/CascadiaCode.zip -Outfile "$($env:USERPROFILE)\fontstemp\CascadiaCode.zip"
-    iwr -uri https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.0/IBMPlexMono.zip -Outfile "$($env:USERPROFILE)\fontstemp\IBMPlexMono.zip"
-    iwr -uri https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.0/CodeNewRoman.zip -Outfile "$($env:USERPROFILE)\fontstemp\CodeNewRoman.zip"
-    iwr -uri https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.0/ComicShannsMono.zip -Outfile "$($env:USERPROFILE)\fontstemp\ComicShannsMono.zip"
-    iwr -uri https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.0/Cousine.zip -Outfile "$($env:USERPROFILE)\fontstemp\Cousine.zip"
-    iwr -uri https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.0/DaddyTimeMono.zip -Outfile "$($env:USERPROFILE)\fontstemp\DaddyTimeMono.zip" 
-    iwr -uri https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.0/DejaVuSansMono.zip -Outfile "$($env:USERPROFILE)\fontstemp\DejaVuSansMono.zip"
-    iwr -uri https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.0/DroidSansMono.zip -Outfile "$($env:USERPROFILE)\fontstemp\DroidSansMono.zip"
-    iwr -uri https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.0/FantasqueSansMono.zip -Outfile "$($env:USERPROFILE)\fontstemp\FantasqueSansMono.zip"
-    iwr -uri https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.0/FiraCode.zip -Outfile "$($env:USERPROFILE)\fontstemp\FiraCode.zip"
-    iwr -uri https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.0/FiraMono.zip -Outfile "$($env:USERPROFILE)\fontstemp\FiraMono.zip" 
-    iwr -uri https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.0/Go-Mono.zip -Outfile "$($env:USERPROFILE)\fontstemp\Go-Mono.zip"
-    iwr -uri https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.0/Gohu.zip -Outfile "$($env:USERPROFILE)\fontstemp\Gohu.zip"
-    iwr -uri https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.0/Hack.zip -Outfile "$($env:USERPROFILE)\fontstemp\Hack.zip"
-    iwr -uri https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.0/Hasklig.zip -Outfile "$($env:USERPROFILE)\fontstemp\Hasklig.zip" 
-    iwr -uri https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.0/HeavyData.zip -Outfile "$($env:USERPROFILE)\fontstemp\HeavyData.zip"
-    iwr -uri https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.0/Hermit.zip -Outfile "$($env:USERPROFILE)\fontstemp\Hermit.zip"
-    iwr -uri https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.0/Inconsolata.zip -Outfile "$($env:USERPROFILE)\fontstemp\Inconsolata.zip"
-    iwr -uri https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.0/iA-Writer.zip -Outfile "$($env:USERPROFILE)\fontstemp\iA-Writer.zip"
-    iwr -uri https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.0/InconsolataGo.zip -Outfile "$($env:USERPROFILE)\fontstemp\InconsolataGo.zip"
-    iwr -uri https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.0/InconsolataLGC.zip -Outfile "$($env:USERPROFILE)\fontstemp\InconsolataLGC.zip"
-    iwr -uri https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.0/Iosevka.zip -Outfile "$($env:USERPROFILE)\fontstemp\Iosevka.zip"
-    iwr -uri https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.0/IosevkaTerm.zip -Outfile "$($env:USERPROFILE)\fontstemp\IosevkaTerm.zip"
-    iwr -uri https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.0/JetBrainsMono.zip -Outfile "$($env:USERPROFILE)\fontstemp\JetBrainsMono.zip"
-    iwr -uri https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.0/Lekton.zip -Outfile "$($env:USERPROFILE)\fontstemp\Lekton.zip"
-    iwr -uri https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.0/LiberationMono.zip -Outfile "$($env:USERPROFILE)\fontstemp\LiberationMono.zip"
-    iwr -uri https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.0/Lilex.zip -Outfile "$($env:USERPROFILE)\fontstemp\Lilex.zip"
-    iwr -uri https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.0/Meslo.zip -Outfile "$($env:USERPROFILE)\fontstemp\Meslo.zip"
-    iwr -uri https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.0/Monofur.zip -Outfile "$($env:USERPROFILE)\fontstemp\Monofur.zip"
-    iwr -uri https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.0/Monoid.zip -Outfile "$($env:USERPROFILE)\fontstemp\Monoid.zip"
-    iwr -uri https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.0/Mononoki.zip -Outfile "$($env:USERPROFILE)\fontstemp\Mononoki.zip"
-    iwr -uri https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.0/MPlus.zip -Outfile "$($env:USERPROFILE)\fontstemp\MPlus.zip"
-    iwr -uri https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.0/Noto.zip -Outfile "$($env:USERPROFILE)\fontstemp\Noto.zip"
-    iwr -uri https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.0/OpenDyslexic.zip -Outfile "$($env:USERPROFILE)\fontstemp\OpenDyslexic.zip"
-    iwr -uri https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.0/Overpass.zip -Outfile "$($env:USERPROFILE)\fontstemp\Overpass.zip"
-    iwr -uri https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.0/ProFont.zip -Outfile "$($env:USERPROFILE)\fontstemp\ProFont.zip"
-    iwr -uri https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.0/ProggyClean.zip -Outfile "$($env:USERPROFILE)\fontstemp\ProggyClean.zip"
-    iwr -uri https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.0/RobotoMono.zip -Outfile "$($env:USERPROFILE)\fontstemp\RobotoMono.zip"
-    iwr -uri https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.0/ShareTechMono.zip -Outfile "$($env:USERPROFILE)\fontstemp\ShareTechMono.zip"
-    iwr -uri https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.0/SourceCodePro.zip -Outfile "$($env:USERPROFILE)\fontstemp\SourceCodePro.zip"
-    iwr -uri https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.0/SpaceMono.zip -Outfile "$($env:USERPROFILE)\fontstemp\SpaceMono.zip"
-    iwr -uri https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.0/NerdFontsSymbolsOnly.zip -Outfile "$($env:USERPROFILE)\fontstemp\NerdFontsSymbolsOnly.zip"
-    iwr -uri https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.0/Terminus.zip -Outfile "$($env:USERPROFILE)\fontstemp\Terminus.zip"
-    iwr -uri https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.0/Tinos.zip -Outfile "$($env:USERPROFILE)\fontstemp\Tinos.zip"
-    iwr -uri https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.0/Ubuntu.zip -Outfile "$($env:USERPROFILE)\fontstemp\Ubuntu.zip"
-    iwr -uri https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.0/UbuntuMono.zip -Outfile "$($env:USERPROFILE)\fontstemp\UbuntuMono.zip"
-    iwr -uri https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.0/VictorMono.zip -Outfile "$($env:USERPROFILE)\fontstemp\VictorMono.zip"
-    clear
+ 
+# Disable progress bars for iwr downloads
+    $ProgressPreference = 'SilentlyContinue' 
 
-# Decompress fonts
+# Download Compresed Fonts
+    write-host "Downloading Compressed Fonts to a temp folder"
+
+    write-host "Downloading Compressed Font: 3270"
+    iwr -uri https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.1/3270.zip -Outfile "$($env:USERPROFILE)\fontstemp\3270.zip"
+    write-host "Successfully Downloaded Compressed Font: 3270"
+
+    write-host "Downloading Compressed Font:Agave"
+    iwr -uri https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.1/Agave.zip -Outfile "$($env:USERPROFILE)\fontstemp\Agave.zip"
+    write-host "Successfully Downloaded Compressed Font: Agave"
+    
+    write-host "Downloading Compressed Font: Anonymous Pro"
+    iwr -uri https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.1/AnonymousPro.zip -Outfile "$($env:USERPROFILE)\fontstemp\AnonymousPro.zip"
+    write-host "Successfully Downloaded Compressed Font: Anonymous Pro"
+    
+    write-host "Downloading Compressed Font: Arimo"
+    iwr -uri https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.1/Arimo.zip -Outfile "$($env:USERPROFILE)\fontstemp\Arimo.zip"
+    write-host "Successfully Downloaded Compressed Font: Arimo"
+    
+    write-host "Downloading Compressed Font: Aurulent Sans Mono"
+    iwr -uri https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.1/AurulentSansMono.zip -Outfile "$($env:USERPROFILE)\fontstemp\AurulentSansMono.zip"
+    write-host "Successfully Downloaded Compressed Font: Aurulent Sans Mono"
+    
+    write-host "Downloading Compressed Font: Big Blue Terminal"
+    iwr -uri https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.1/BigBlueTerminal.zip -Outfile "$($env:USERPROFILE)\fontstemp\BigBlueTerminal.zip"
+    write-host "Successfully Downloaded Compressed Font: Big Blue Terminal"
+    
+    write-host "Downloading Compressed Font: Bitstream Vera Sans Mono"
+    iwr -uri https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.1/BitstreamVeraSansMono.zip -Outfile "$($env:USERPROFILE)\fontstemp\BitstreamVeraSansMono.zip"
+    write-host "Successfully Downloaded Compressed Font: Bitstream Vera Sans Mono"
+    
+    write-host "Downloading Compressed Font: Cascadia Code"
+    iwr -uri https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.1/CascadiaCode.zip -Outfile "$($env:USERPROFILE)\fontstemp\CascadiaCode.zip"
+    write-host "Successfully Downloaded Compressed Font: Cascadia Code"
+    
+    write-host "Downloading Compressed Font: IBM Plex Mono"
+    iwr -uri https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.1/IBMPlexMono.zip -Outfile "$($env:USERPROFILE)\fontstemp\IBMPlexMono.zip"
+    write-host "Successfully Downloaded Compressed Font: IBM Plex Mono"
+    
+    write-host "Downloading Compressed Font: Code New Roman"
+    iwr -uri https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.1/CodeNewRoman.zip -Outfile "$($env:USERPROFILE)\fontstemp\CodeNewRoman.zip"
+    write-host "Successfully Downloaded Compressed Font: Code New Roman"
+    
+    write-host "Downloading Compressed Font: Comic Shanns Mono"
+    iwr -uri https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.1/ComicShannsMono.zip -Outfile "$($env:USERPROFILE)\fontstemp\ComicShannsMono.zip"
+    write-host "Successfully Downloaded Compressed Font: Comic Shanns Mono"
+    
+    write-host "Downloading Compressed Font: Cousine"
+    iwr -uri https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.1/Cousine.zip -Outfile "$($env:USERPROFILE)\fontstemp\Cousine.zip"
+    write-host "Successfully Downloaded Compressed Font: Cousine"
+    
+    write-host "Downloading Compressed Font: Daddy Time Mono"
+    iwr -uri https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.1/DaddyTimeMono.zip -Outfile "$($env:USERPROFILE)\fontstemp\DaddyTimeMono.zip" 
+    write-host "Successfully Downloaded Compressed Font: Daddy Time Mono"
+    
+    write-host "Downloading Compressed Font: DejaVu Sans Mono"
+    iwr -uri https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.1/DejaVuSansMono.zip -Outfile "$($env:USERPROFILE)\fontstemp\DejaVuSansMono.zip"
+    write-host "Successfully Downloaded Compressed Font: DejaVu Sans Mono"
+    
+    write-host "Downloading Compressed Font: Droid Sans Mono"
+    iwr -uri https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.1/DroidSansMono.zip -Outfile "$($env:USERPROFILE)\fontstemp\DroidSansMono.zip"
+    write-host "Successfully Downloaded Compressed Font: Droid Sans Mono"
+    
+    write-host "Downloading Compressed Font: Fantasque Sans Mono"
+    iwr -uri https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.1/FantasqueSansMono.zip -Outfile "$($env:USERPROFILE)\fontstemp\FantasqueSansMono.zip"
+    write-host "Successfully Downloaded Compressed Font: Fantasque Sans Mono"
+    
+    write-host "Downloading Compressed Font: Fira Code"
+    iwr -uri https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.1/FiraCode.zip -Outfile "$($env:USERPROFILE)\fontstemp\FiraCode.zip"
+    write-host "Successfully Downloaded Compressed Font: Fira Code"
+    
+    write-host "Downloading Compressed Font:Fira Mono"
+    iwr -uri https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.1/FiraMono.zip -Outfile "$($env:USERPROFILE)\fontstemp\FiraMono.zip" 
+    write-host "Successfully Downloaded Compressed Font: Fira Mono"
+   
+    write-host "Downloading Compressed Font: Go Mono"
+    iwr -uri https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.1/Go-Mono.zip -Outfile "$($env:USERPROFILE)\fontstemp\Go-Mono.zip"
+    write-host "Successfully Downloaded Compressed Font: Go Mono"
+    
+    write-host "Downloading Compressed Font: Gohu"
+    iwr -uri https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.1/Gohu.zip -Outfile "$($env:USERPROFILE)\fontstemp\Gohu.zip"
+    write-host "Successfully Downloaded Compressed Font: Gohu"
+    
+    write-host "Downloading Compressed Font: Hack"
+    iwr -uri https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.1/Hack.zip -Outfile "$($env:USERPROFILE)\fontstemp\Hack.zip"
+    write-host "Successfully Downloaded Compressed Font: Hack"
+    
+    write-host "Downloading Compressed Font: Hasklig"
+    iwr -uri https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.1/Hasklig.zip -Outfile "$($env:USERPROFILE)\fontstemp\Hasklig.zip" 
+    write-host "Successfully Downloaded Compressed Font: Hasklig"
+    
+    write-host "Downloading Compressed Font: Heavy Data"
+    iwr -uri https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.1/HeavyData.zip -Outfile "$($env:USERPROFILE)\fontstemp\HeavyData.zip"
+    write-host "Successfully Downloaded Compressed Font: Heavy Data"
+    
+    write-host "Downloading Compressed Font: Hermit"
+    iwr -uri https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.1/Hermit.zip -Outfile "$($env:USERPROFILE)\fontstemp\Hermit.zip"
+    write-host "Successfully Downloaded Compressed Font: Hermit"
+    
+    write-host "Downloading Compressed Font: Inconsolata"
+    iwr -uri https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.1/Inconsolata.zip -Outfile "$($env:USERPROFILE)\fontstemp\Inconsolata.zip"
+    write-host "Successfully Downloaded Compressed Font: Inconsolata"
+    
+    write-host "Downloading Compressed Font: iA-Writer"
+    iwr -uri https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.1/iA-Writer.zip -Outfile "$($env:USERPROFILE)\fontstemp\iA-Writer.zip"
+    write-host "Successfully Downloaded Compressed Font: iA-Writer"
+    
+    write-host "Downloading Compressed Font: Inconsolata Go"
+    iwr -uri https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.1/InconsolataGo.zip -Outfile "$($env:USERPROFILE)\fontstemp\InconsolataGo.zip"
+    write-host "Successfully Downloaded Compressed Font: Inconsolata Go"
+    
+    write-host "Downloading Compressed Font: Inconsolata LGC"
+    iwr -uri https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.1/InconsolataLGC.zip -Outfile "$($env:USERPROFILE)\fontstemp\InconsolataLGC.zip"
+    write-host "Successfully Downloaded Compressed Font: Inconsolata LGC"
+    
+    write-host "Downloading Compressed Font: Iosevka"
+    iwr -uri https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.1/Iosevka.zip -Outfile "$($env:USERPROFILE)\fontstemp\Iosevka.zip"
+    write-host "Successfully Downloaded Compressed Font: Iosevka"
+    
+    write-host "Downloading Compressed Font: Iosevka Terminal"
+    iwr -uri https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.1/IosevkaTerm.zip -Outfile "$($env:USERPROFILE)\fontstemp\IosevkaTerm.zip"
+    write-host "Successfully Downloaded Compressed Font: Iosevka Terminal"
+    
+    write-host "Downloading Compressed Font: JetBrains Mono"
+    iwr -uri https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.1/JetBrainsMono.zip -Outfile "$($env:USERPROFILE)\fontstemp\JetBrainsMono.zip"
+    write-host "Successfully Downloaded Compressed Font: JetBrains Mono"
+    
+    write-host "Downloading Compressed Font: Lekton"
+    iwr -uri https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.1/Lekton.zip -Outfile "$($env:USERPROFILE)\fontstemp\Lekton.zip"
+    write-host "Successfully Downloaded Compressed Font: Lekton"
+    
+    write-host "Downloading Compressed Font: Liberation Mono"
+    iwr -uri https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.1/LiberationMono.zip -Outfile "$($env:USERPROFILE)\fontstemp\LiberationMono.zip"
+    write-host "Successfully Downloaded Compressed Font: Liberation Mono"
+    
+    write-host "Downloading Compressed Font: Lilex"
+    iwr -uri https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.1/Lilex.zip -Outfile "$($env:USERPROFILE)\fontstemp\Lilex.zip"
+    write-host "Successfully Downloaded Compressed Font: Lilex"
+    
+    write-host "Downloading Compressed Font: Meslo"
+    iwr -uri https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.1/Meslo.zip -Outfile "$($env:USERPROFILE)\fontstemp\Meslo.zip"
+    write-host "Successfully Downloaded Compressed Font: Meslo"
+    
+    write-host "Downloading Compressed Font: Monofur"
+    iwr -uri https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.1/Monofur.zip -Outfile "$($env:USERPROFILE)\fontstemp\Monofur.zip"
+    write-host "Successfully Downloaded Compressed Font: Monofur"
+    
+    write-host "Downloading Compressed Font: Monoid"
+    iwr -uri https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.1/Monoid.zip -Outfile "$($env:USERPROFILE)\fontstemp\Monoid.zip"
+    write-host "Successfully Downloaded Compressed Font: Monoid"
+    
+    write-host "Downloading Compressed Font: Mononoki"
+    iwr -uri https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.1/Mononoki.zip -Outfile "$($env:USERPROFILE)\fontstemp\Mononoki.zip"
+    write-host "Successfully Downloaded Compressed Font: Mononoki"
+    
+    write-host "Downloading Compressed Font: MPlus"
+    iwr -uri https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.1/MPlus.zip -Outfile "$($env:USERPROFILE)\fontstemp\MPlus.zip"
+    write-host "Successfully Downloaded Compressed Font: MPlus"
+    
+    write-host "Downloading Compressed Font: Noto"
+    iwr -uri https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.1/Noto.zip -Outfile "$($env:USERPROFILE)\fontstemp\Noto.zip"
+    write-host "Successfully Downloaded Compressed Font: Noto"
+    
+    write-host "Downloading Compressed Font: Open Dyslexic"
+    iwr -uri https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.1/OpenDyslexic.zip -Outfile "$($env:USERPROFILE)\fontstemp\OpenDyslexic.zip"
+    write-host "Successfully Downloaded Compressed Font: Open Dyslexic"
+    
+    write-host "Downloading Compressed Font: Overpass"
+    iwr -uri https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.1/Overpass.zip -Outfile "$($env:USERPROFILE)\fontstemp\Overpass.zip"
+    write-host "Successfully Downloaded Compressed Font: Overpass"
+    
+    write-host "Downloading Compressed Font: Pro Font"
+    iwr -uri https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.1/ProFont.zip -Outfile "$($env:USERPROFILE)\fontstemp\ProFont.zip"
+    write-host "Successfully Downloaded Compressed Font: Pro Font"
+    
+    write-host "Downloading Compressed Font: Proggy Clean"
+    iwr -uri https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.1/ProggyClean.zip -Outfile "$($env:USERPROFILE)\fontstemp\ProggyClean.zip"
+    write-host "Successfully Downloaded Compressed Font: Proggy Clean"
+    
+    write-host "Downloading Compressed Font: Roboto Mono"
+    iwr -uri https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.1/RobotoMono.zip -Outfile "$($env:USERPROFILE)\fontstemp\RobotoMono.zip"
+    write-host "Successfully Downloaded Compressed Font: Roboto Mono"
+    
+    write-host "Downloading Compressed Font: Share Tech Mono"
+    iwr -uri https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.1/ShareTechMono.zip -Outfile "$($env:USERPROFILE)\fontstemp\ShareTechMono.zip"
+    write-host "Successfully Downloaded Compressed Font: Share Tech Mono"
+    
+    write-host "Downloading Compressed Font: Source Code Pro"
+    iwr -uri https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.1/SourceCodePro.zip -Outfile "$($env:USERPROFILE)\fontstemp\SourceCodePro.zip"
+    write-host "Successfully Downloaded Compressed Font: Source Code Pro"
+    
+    write-host "Downloading Compressed Font: Space Mono"
+    iwr -uri https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.1/SpaceMono.zip -Outfile "$($env:USERPROFILE)\fontstemp\SpaceMono.zip"
+    write-host "Successfully Downloaded Compressed Font: Space Mono"
+    
+    write-host "Downloading Compressed Font: Nerd Fonts Symbols Only"
+    iwr -uri https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.1/NerdFontsSymbolsOnly.zip -Outfile "$($env:USERPROFILE)\fontstemp\NerdFontsSymbolsOnly.zip"
+    write-host "Successfully Downloaded Compressed Font: Nerd Fonts Symbols Only"
+    
+    write-host "Downloading Compressed Font: Terminus"
+    iwr -uri https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.1/Terminus.zip -Outfile "$($env:USERPROFILE)\fontstemp\Terminus.zip"
+    write-host "Successfully Downloaded Compressed Font: Terminus"
+    
+    write-host "Downloading Compressed Font: Tinos"
+    iwr -uri https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.1/Tinos.zip -Outfile "$($env:USERPROFILE)\fontstemp\Tinos.zip"
+    write-host "Successfully Downloaded Compressed Font: Tinos"
+    
+    write-host "Downloading Compressed Font: Ubuntu"
+    iwr -uri https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.1/Ubuntu.zip -Outfile "$($env:USERPROFILE)\fontstemp\Ubuntu.zip"
+    write-host "Successfully Downloaded Compressed Font: Ubuntu"
+    
+    write-host "Downloading Compressed Font: Ubuntu Mono"
+    iwr -uri https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.1/UbuntuMono.zip -Outfile "$($env:USERPROFILE)\fontstemp\UbuntuMono.zip"
+    write-host "Successfully Downloaded Compressed Font: Ubuntu Mono"
+    
+    write-host "Downloading Compressed Font: Victor Mono"
+    iwr -uri https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.1/VictorMono.zip -Outfile "$($env:USERPROFILE)\fontstemp\VictorMono.zip"
+    write-host "Successfully Downloaded Compressed Font: Victor Mono"
+    
+    # Enable Progress Bars
+    $ProgressPreference = 'Continue' 
+   
+    # Decompress fonts
     write-host "Decompressing Fonts"
     New-Item -Path $env:USERPROFILE\fontstemp\decompressed -ItemType Directory -Force
     Set-Location -Path $env:USERPROFILE
     $FontFolder = "$($env:USERPROFILE)\fontstemp\decompressed"
-    Get-ChildItem "$($env:USERPROFILE)\fontstemp\" -Filter *.zip | Expand-Archive -DestinationPath $FontFolder
+    Get-ChildItem "$($env:USERPROFILE)\fontstemp\" -Filter *.zip | Expand-Archive -DestinationPath $FontFolder -Force
     $Font = Get-Item -Path $FontFolder
     $FontList = Get-ChildItem -Path "$Font\*" -Include ('*.fon','*.otf','*.ttc','*.ttf')
     Set-Location -Path $env:USERPROFILE\fontstemp\decompressed
@@ -124,14 +312,16 @@
 # Install fonts    
     foreach ($Font in $FontList) {
             Write-Host 'Installing font -' $Font.BaseName
-            Copy-Item $Font "C:\Windows\Fonts"
+            Copy-Item -Force $Font "C:\Windows\Fonts"
             New-ItemProperty -Name $Font.BaseName -Path "HKLM:\Software\Microsoft\Windows NT\CurrentVersion\Fonts" -PropertyType string -Value $Font.name         
     }
     clear
 
 # Remove temp folder
     write-host "Performing Cleanup"
+    write-host "Removing temporary folders and files"
     Set-Location $env:USERPROFILE
     Remove-Item -Path fontstemp -Recurse
-    write-host "Nerd Font installation completed"
+    write-host "All temporary folders and files have been removed successfully"
+    write-host "Nerd Font installation has completed successfully"
     
